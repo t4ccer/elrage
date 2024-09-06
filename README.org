@@ -1,0 +1,27 @@
+* =agenix-ng.el=
+
+*Experimental* reimplementation of [[https://github.com/t4ccer/agenix.el/][agenix.el]] as a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Modules.html][dynamic module]] written in Rust. That allows to use Rust implementation of =age= ([[https://github.com/str4d/rage][rage]]) as a library to hook into callbacks for user input directly for things like passphrase input. It requires Emacs compiled with support for dynamic modules.
+
+** Usage
+
+Don't. It's not finished.
+
+#+begin_src console
+$ nix build -L .#agenix-ng-el
+$ cp ./result/lib/libagenix_ng_el.so /path/to/some/dir/agenix-ng.so
+#+end_src
+
+#+begin_src elisp
+(add-to-list 'load-path "/path/to/some/dir")
+(require 'agenix-ng)
+#+end_src
+
+** License
+
+Copyright (C) 2024 Tomasz Maciosowski (t4ccer)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
