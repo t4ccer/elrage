@@ -8,17 +8,22 @@
 
 #+begin_src console
 $ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
-$ nix build -L .#elrage
-$ cp ./result/lib/elrage.so ~/.emacs.d/dynamic-modules/elrage.so
+$ nix build -L github:t4ccer/elrage#elrage
+$ nix-store --realise ./result --add-root ~/.emacs.d/dynamic-modules/elrage.root
+$ ln -s ~/.emacs.d/dynamic-modules/{elrage.root/lib/,}elrage.so -f
 #+end_src
 
 *** With Cargo
 
 #+begin_src console
+$ git clone https://github.com/t4ccer/elrage
+$ cd elrage
 $ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
 $ cargo build --release
 $ cp ./target/release/libelrage.so ~/.emacs.d/dynamic-modules/elrage.so
 #+end_src
+
+Note that this is not recommended on NixOS for long-term use (but perfect for development) as runtime dependencies of elrage.so file such as glibc may get garbage collected.
 
 *** Common
 
