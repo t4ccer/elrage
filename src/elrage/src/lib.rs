@@ -101,6 +101,7 @@ enum ElrageError {
     DecryptIoError(std::io::Error),
     InvalidRecipient(String),
     NoRecipients,
+    PassphraseFile,
 }
 
 impl fmt::Display for ElrageError {
@@ -125,6 +126,7 @@ impl fmt::Display for ElrageError {
             ElrageError::DecryptIoError(e) => write!(f, "Age decryption IO error: {e}"),
             ElrageError::InvalidRecipient(e) => write!(f, "Invalid recipient: {e}"),
             ElrageError::NoRecipients => write!(f, "No recipients provided"),
+            ElrageError::PassphraseFile => write!(f, "Passphrase files are not supported"),
         }
     }
 }
@@ -213,7 +215,7 @@ fn decrypt_file_worker(
 
     let decryptor = match Decryptor::new_buffered(encrypted_file)? {
         Decryptor::Recipients(d) => d,
-        Decryptor::Passphrase(_) => unimplemented!(),
+        Decryptor::Passphrase(_) => return Err(ElrageError::PassphraseFile),
     };
     let mut decrypted_stream = decrypted_stream_from_keys(env, &key_paths, decryptor)?;
     let mut decrypted_buffer = Vec::new();
