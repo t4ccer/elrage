@@ -1,19 +1,43 @@
-* =agenix-ng.el=
+* =elrage=
 
-*Experimental* reimplementation of [[https://github.com/t4ccer/agenix.el/][agenix.el]] as a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Modules.html][dynamic module]] written in Rust. That allows to use Rust implementation of =age= ([[https://github.com/str4d/rage][rage]]) as a library to hook into callbacks for user input directly for things like passphrase input. It requires Emacs compiled with support for dynamic modules.
+*Experimental* Emacs interface to Rust implementation of =age= ([[https://github.com/str4d/rage][rage]]) with support for passphrase input callbacks. It requires Emacs compiled with support for [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Modules.html][dynamic modules]].
+
+** Installation
+
+*** With Nix
+
+#+begin_src console
+$ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
+$ nix build -L .#elrage
+$ cp ./result/lib/elrage.so ~/.emacs.d/dynamic-modules/elrage.so
+#+end_src
+
+*** With Cargo
+
+#+begin_src console
+$ mkdir -p ~/.emacs.d/dynamic-modules # or any path other you want
+$ cargo build --release
+$ cp ./target/release/libelrage.so ~/.emacs.d/dynamic-modules/elrage.so
+#+end_src
+
+*** Common
+
+#+begin_src elisp
+(add-to-list 'load-path "~/.emacs.d/dynamic-modules")
+(require 'elrage)
+#+end_src
 
 ** Usage
 
-Don't. It's not finished.
+*** [[https://github.com/t4ccer/agenix.el/][agenix.el]] integration
 
-#+begin_src console
-$ nix build -L .#agenix-ng-el
-$ cp ./result/lib/libagenix_ng_el.so /path/to/some/dir/agenix-ng.so
-#+end_src
+Functions exposed by this package have signatures that match those of =agenix-age-decrypt-function= and =agenix-age-encrypt-function= variables. This enables support for SSH keys with passphrases and does not require =age= executable in runtime.
 
 #+begin_src elisp
-(add-to-list 'load-path "/path/to/some/dir")
-(require 'agenix-ng)
+;; Install agenix.el and elrage
+
+(setq agenix-age-decrypt-function 'elrage-decrypt-file-interactive)
+(setq agenix-age-encrypt-function 'elrage-encrypt-file)
 #+end_src
 
 ** License

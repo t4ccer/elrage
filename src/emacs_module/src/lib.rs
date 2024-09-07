@@ -50,7 +50,7 @@ impl EmacsEnv {
             args: *mut emacs_value,
             data: *mut ::std::os::raw::c_void,
         ) -> emacs_value,
-        docstring: &[u8],
+        docstring: &CStr,
     ) -> emacs_value {
         unsafe {
             ((*self.inner).make_function.unwrap())(
@@ -76,13 +76,13 @@ impl EmacsEnv {
     }
 
     #[inline]
-    pub fn fun_call(&self, func: emacs_value, args: &mut [emacs_value]) -> emacs_value {
+    pub fn fun_call(&self, func: emacs_value, args: &[emacs_value]) -> emacs_value {
         unsafe {
             ((*self.inner).funcall.unwrap())(
                 self.inner,
                 func,
                 args.len() as isize,
-                args.as_mut_ptr(),
+                args.as_ptr().cast_mut(),
             )
         }
     }
@@ -99,12 +99,12 @@ impl EmacsEnv {
             args: *mut emacs_value,
             data: *mut ::std::os::raw::c_void,
         ) -> emacs_value,
-        docstring: &[u8],
+        docstring: &CStr,
     ) -> emacs_value {
         let fset = self.intern(c"fset");
         let func_name = self.intern(func_name);
         let func = self.make_function(min_arity, max_arity, func, docstring);
-        self.fun_call(fset, &mut [func_name, func]);
+        self.fun_call(fset, &[func_name, func]);
         func_name
     }
 
@@ -112,7 +112,7 @@ impl EmacsEnv {
     pub fn provide(&self, atom: &CStr) {
         let provide = self.intern(c"provide");
         let atom = self.intern(atom);
-        self.fun_call(provide, &mut [atom]);
+        self.fun_call(provide, &[atom]);
     }
 
     #[inline]
@@ -158,5 +158,10 @@ impl EmacsEnv {
     #[inline]
     pub fn extract_integer(&self, source: emacs_value) -> i64 {
         unsafe { ((*self.inner).extract_integer.unwrap())(self.inner, source) }
+    }
+
+    #[inline]
+    pub fn is_not_nil(&self, value: emacs_value) -> bool {
+        unsafe { ((*self.inner).is_not_nil.unwrap())(self.inner, value) }
     }
 }

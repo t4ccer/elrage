@@ -1,6 +1,6 @@
 [package]
-name = "agenix_ng_el"
-version = "0.1.0"
+name = "elrage"
+version = "1.0.0"
 edition = "2021"
 
 [dependencies]
@@ -8,5 +8,4 @@ age = {version = "0.10.0", features = ["ssh"]}
 emacs_module = {path = "../emacs_module"}
 
 [lib]
-path = "lib.rs"
 crate-type = ["rlib", "cdylib"]

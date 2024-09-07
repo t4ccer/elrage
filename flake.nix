@@ -1,5 +1,5 @@
 {
-  description = "agenix-ng.el";
+  description = "elrage";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs";
@@ -57,8 +57,8 @@
             };
           };
 
-          packages.agenix-ng-el = pkgs.rustPlatform.buildRustPackage {
-            name = "agenix-ng.el";
+          packages.elrage = pkgs.rustPlatform.buildRustPackage {
+            name = "elrage";
 
             src = ./.;
 
@@ -69,6 +69,10 @@
             ];
 
             env.LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
+
+            postInstall = ''
+              mv $out/lib/libelrage.so $out/lib/elrage.so
+            '';
           };
 
           devShells.default = pkgs.mkShell {
@@ -81,6 +85,7 @@
             nativeBuildInputs = [
               pkgs.clang
               rustToolchain
+              pkgs.cargo-expand
             ];
           };
         };

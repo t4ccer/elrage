@@ -2,8 +2,8 @@ use std::{env, path::PathBuf};
 
 fn main() {
     let bindings = bindgen::Builder::default()
-        .header("vendor/emacs-29.4/emacs-module.h")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .header("vendor/emacs-25/emacs-module.h")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .unwrap();
 
